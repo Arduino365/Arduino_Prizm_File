@@ -17,9 +17,9 @@ enum ControlType {
   NONE
 };
 
-class ServoControl {
+class RobotControl {
   public:
-    ServoControl(PRIZM& prizmRef, PS4& ps4Ref);
+    RobotControl(PRIZM& prizmRef, PS4& ps4Ref);
     
     // X-axis methods
     void xByButtons(int& x);
