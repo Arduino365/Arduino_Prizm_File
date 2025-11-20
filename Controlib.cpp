@@ -1,17 +1,22 @@
 #include "Controlib.h"
 
 RobotControl::RobotControl(PRIZM& prizmRef, PS4& ps4Ref) 
-  : prizm(prizmRef), ps4(ps4Ref), lastUpdate(0), xControl(NONE), yControl(NONE), dControl(NONE), speedLevel(0), lastCrossState(false) {}
+  : prizm(prizmRef), ps4(ps4Ref), lastUpdate(0), xControl(NONE), yControl(NONE), dControl(NONE), speedLevel(0), lastShareState(false) {}
 
 void RobotControl::speedControl() {
-  bool currentCrossState = ps4.Button(CROSS);
+  bool currentCrossState = ps4.Button(SHARE);
 
   if(currentCrossState && !lastCrossState){
     speedLevel++;
     if(speedLevel > 2){
       speedLevel = 0;
     }
-    
+    else if(speedLevel == 0){
+      speedOn = false;
+    }
+    else if(0 < speedLevel < 2){
+      speedOn = true;
+    }
     Serial.print("Speed Level: ");
     Serial.println(speedLevel);
   }
@@ -67,11 +72,23 @@ void RobotControl::xByButtons(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Button(SQUARE)) {
-    x = constrain(x - 10, 0, 180);
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
   }
   else if (ps4.Button(CIRCLE)) {
-    x = constrain(x + 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
+
 }
 
 void RobotControl::xByLeftStick(int& x) {
@@ -81,11 +98,22 @@ void RobotControl::xByLeftStick(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Motor(LX) > 10) {
-    x = constrain(x + 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
+
   else if (ps4.Motor(LX) < -10) {
-    x = constrain(x - 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
 }
 
 void RobotControl::xByRightStick(int& x) {
@@ -95,11 +123,22 @@ void RobotControl::xByRightStick(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Motor(RX) > 10) {
-    x = constrain(x + 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
+
   else if (ps4.Motor(RX) < -10) {
-    x = constrain(x - 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
 }
 
 void RobotControl::xByDPAD(int& x) {
@@ -109,11 +148,21 @@ void RobotControl::xByDPAD(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Button(LEFT)) {
-    x = constrain(x - 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
   else if (ps4.Button(RIGHT)) {
-    x = constrain(x + 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
 }
 
 void RobotControl::xByBumpers(int& x) {
@@ -123,11 +172,21 @@ void RobotControl::xByBumpers(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Button(L1)) {
-    x = constrain(x - 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
   else if (ps4.Button(R1)) {
-    x = constrain(x + 10, 0, 180);
-  }
+   if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
 }
 
 void RobotControl::xByTriggers(int& x) {
@@ -137,11 +196,21 @@ void RobotControl::xByTriggers(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Button(L2)) {
-    x = constrain(x - 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
   else if (ps4.Button(R2)) {
-    x = constrain(x + 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
 }
 
 void RobotControl::xByJoystickPress(int& x) {
@@ -151,11 +220,21 @@ void RobotControl::xByJoystickPress(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Button(L3)) {
-    x = constrain(x - 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
   else if (ps4.Button(R3)) {
-    x = constrain(x + 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
 }
 
 void RobotControl::xByTouchpad(int& x) {
@@ -165,11 +244,21 @@ void RobotControl::xByTouchpad(int& x) {
   if (!canUpdate()) return;
   
   if (ps4.Touchpad(TOUCHX) <= 960) {
-    x = constrain(x - 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x - change, 0, 180);
+    }
   else if (ps4.Touchpad(TOUCHX) > 960) {
-    x = constrain(x + 10, 0, 180);
-  }
+    if(speedOn == false){
+      x = constrain(x + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      x = constrain(x + change, 0, 180);
+    }
 }
 
 // Y-AXIS METHODS
@@ -180,11 +269,22 @@ void RobotControl::yByButtons(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.Button(CROSS)) {
-    y = constrain(y - 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
+
   else if (ps4.Button(TRIANGLE)) {
-    y = constrain(y + 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
 }
 
 void RobotControl::yByLeftStick(int& y) {
@@ -194,11 +294,22 @@ void RobotControl::yByLeftStick(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.Motor(LY) > 10) {
-    y = constrain(y + 10, 0, 180);
-  }
+       if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
+
   else if (ps4.Motor(LY) < -10) {
-    y = constrain(y - 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
 }
 
 void RobotControl::yByRightStick(int& y) {
@@ -208,11 +319,22 @@ void RobotControl::yByRightStick(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.Motor(RY) > 10) {
-    y = constrain(y + 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
+
   else if (ps4.Motor(RY) < -10) {
-    y = constrain(y - 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
 }
 
 void RobotControl::yByDPAD(int& y) {
@@ -222,11 +344,21 @@ void RobotControl::yByDPAD(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.Button(DOWN)) {
-    y = constrain(y - 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
   else if (ps4.Button(UP)) {
-    y = constrain(y + 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
 }
 
 void RobotControl::yByBumpers(int& y) {
@@ -236,11 +368,21 @@ void RobotControl::yByBumpers(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.Button(L1)) {
-    y = constrain(y - 10, 0, 180);
-  }
+       if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
   else if (ps4.Button(R1)) {
-    y = constrain(y + 10, 0, 180);
-  }
+        if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
 }
 
 void RobotControl::yByTriggers(int& y) {
@@ -250,11 +392,22 @@ void RobotControl::yByTriggers(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.Button(L2)) {
-    y = constrain(y - 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
+
   else if(ps4.Button(R2)){
-    y = constrain(y + 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
 }
 
 void RobotControl::yByJoystickPress(int& y) {
@@ -264,11 +417,22 @@ void RobotControl::yByJoystickPress(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.Button(L3)) {
-    y = constrain(y - 10, 0, 180);
-  }
-  else if(ps4.Button(L3)){
-    y = contrain(y+10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
+
+  else if(ps4.Button(R3)){
+    if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
 }
 
 void RobotControl::yByTouchpad(int& y) {
@@ -278,11 +442,22 @@ void RobotControl::yByTouchpad(int& y) {
   if (!canUpdate()) return;
   
   if (ps4.TOUCHPAD(TOUCHY) > 470){
-    y = constrain(y + 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y + 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y + change, 0, 180);
+    }
+
   else if(ps4.TOUCHPAD(TOUCHY) <= 470){
-    y = constrain(y - 10, 0, 180);
-  }
+    if(speedOn == false){
+      y = constrain(y - 10, 0, 180);
+    }
+    else{
+      change = 10 * getSpeedMultiplier();
+      y = constrain(y - change, 0, 180);
+    }
 }
 
 // D-AXIS METHODS
