@@ -1,9 +1,9 @@
 #include "Controlib.h"
 
-ServoControl::ServoControl(PRIZM& prizmRef, PS4& ps4Ref) 
+RobotControl::RobotControl(PRIZM& prizmRef, PS4& ps4Ref) 
   : prizm(prizmRef), ps4(ps4Ref), lastUpdate(0), xControl(NONE), yControl(NONE), dControl(NONE), speedLevel(0), lastCrossState(false) {}
 
-void ServoControl::speedControl() {
+void RobotControl::speedControl() {
   bool currentCrossState = ps4.Button(CROSS);
 
   if(currentCrossState && !lastCrossState){
@@ -18,11 +18,11 @@ void ServoControl::speedControl() {
   lastCrossState = currentCrossState;
 }
 
-int ServoControl::getSpeedLevel() {
+int RobotControl::getSpeedLevel() {
   return speedLevel;
 }
 
-float ServoControl::getSpeedMultiplier() {
+float RobotControl::getSpeedMultiplier() {
   switch(speedLevel){
     case 1:
       return 0.5f;  // 50% speed
@@ -33,7 +33,7 @@ float ServoControl::getSpeedMultiplier() {
   }
 }
 
-bool ServoControl::canUpdate() {
+bool RobotControl::canUpdate() {
   unsigned long now = millis();
   if (now - lastUpdate >= UPDATE_INTERVAL) {
     lastUpdate = now;
@@ -42,7 +42,7 @@ bool ServoControl::canUpdate() {
   return false;
 }
 
-bool ServoControl::checkConflict(ControlType newControl, char axis) {
+bool RobotControl::checkConflict(ControlType newControl, char axis) {
   if (newControl == NONE) return false;
   
   // Check if this control is already used by other axes
@@ -60,7 +60,7 @@ bool ServoControl::checkConflict(ControlType newControl, char axis) {
 }
 
 // X-AXIS METHODS
-void ServoControl::xByButtons(int& x) {
+void RobotControl::xByButtons(int& x) {
   if (checkConflict(BUTTONS, 'x')) return;
   xControl = BUTTONS;
   
@@ -74,7 +74,7 @@ void ServoControl::xByButtons(int& x) {
   }
 }
 
-void ServoControl::xByLeftStick(int& x) {
+void RobotControl::xByLeftStick(int& x) {
   if (checkConflict(LEFT_STICK, 'x')) return;
   xControl = LEFT_STICK;
   
@@ -88,7 +88,7 @@ void ServoControl::xByLeftStick(int& x) {
   }
 }
 
-void ServoControl::xByRightStick(int& x) {
+void RobotControl::xByRightStick(int& x) {
   if (checkConflict(RIGHT_STICK, 'x')) return;
   xControl = RIGHT_STICK;
   
@@ -102,7 +102,7 @@ void ServoControl::xByRightStick(int& x) {
   }
 }
 
-void ServoControl::xByDPAD(int& x) {
+void RobotControl::xByDPAD(int& x) {
   if (checkConflict(DPAD, 'x')) return;
   xControl = DPAD;
   
@@ -116,7 +116,7 @@ void ServoControl::xByDPAD(int& x) {
   }
 }
 
-void ServoControl::xByBumpers(int& x) {
+void RobotControl::xByBumpers(int& x) {
   if (checkConflict(BUMPERS, 'x')) return;
   xControl = BUMPERS;
   
@@ -130,7 +130,7 @@ void ServoControl::xByBumpers(int& x) {
   }
 }
 
-void ServoControl::xByTriggers(int& x) {
+void RobotControl::xByTriggers(int& x) {
   if (checkConflict(TRIGGERS, 'x')) return;
   xControl = TRIGGERS;
   
@@ -144,7 +144,7 @@ void ServoControl::xByTriggers(int& x) {
   }
 }
 
-void ServoControl::xByJoystickPress(int& x) {
+void RobotControl::xByJoystickPress(int& x) {
   if (checkConflict(JOYSTICK_PRESS, 'x')) return;
   xControl = JOYSTICK_PRESS;
   
@@ -158,7 +158,7 @@ void ServoControl::xByJoystickPress(int& x) {
   }
 }
 
-void ServoControl::xByTouchpad(int& x) {
+void RobotControl::xByTouchpad(int& x) {
   if (checkConflict(TOUCHPAD, 'x')) return;
   xControl = TOUCHPAD;
   
@@ -173,7 +173,7 @@ void ServoControl::xByTouchpad(int& x) {
 }
 
 // Y-AXIS METHODS
-void ServoControl::yByButtons(int& y) {
+void RobotControl::yByButtons(int& y) {
   if (checkConflict(BUTTONS, 'y')) return;
   yControl = BUTTONS;
   
@@ -187,7 +187,7 @@ void ServoControl::yByButtons(int& y) {
   }
 }
 
-void ServoControl::yByLeftStick(int& y) {
+void RobotControl::yByLeftStick(int& y) {
   if (checkConflict(LEFT_STICK, 'y')) return;
   yControl = LEFT_STICK;
   
@@ -201,7 +201,7 @@ void ServoControl::yByLeftStick(int& y) {
   }
 }
 
-void ServoControl::yByRightStick(int& y) {
+void RobotControl::yByRightStick(int& y) {
   if (checkConflict(RIGHT_STICK, 'y')) return;
   yControl = RIGHT_STICK;
   
@@ -215,7 +215,7 @@ void ServoControl::yByRightStick(int& y) {
   }
 }
 
-void ServoControl::yByDPAD(int& y) {
+void RobotControl::yByDPAD(int& y) {
   if (checkConflict(DPAD, 'y')) return;
   yControl = DPAD;
   
@@ -229,7 +229,7 @@ void ServoControl::yByDPAD(int& y) {
   }
 }
 
-void ServoControl::yByBumpers(int& y) {
+void RobotControl::yByBumpers(int& y) {
   if (checkConflict(BUMPERS, 'y')) return;
   yControl = BUMPERS;
   
@@ -243,7 +243,7 @@ void ServoControl::yByBumpers(int& y) {
   }
 }
 
-void ServoControl::yByTriggers(int& y) {
+void RobotControl::yByTriggers(int& y) {
   if (checkConflict(TRIGGERS, 'y')) return;
   yControl = TRIGGERS;
   
@@ -257,7 +257,7 @@ void ServoControl::yByTriggers(int& y) {
   }
 }
 
-void ServoControl::yByJoystickPress(int& y) {
+void RobotControl::yByJoystickPress(int& y) {
   if (checkConflict(JOYSTICK_PRESS, 'y')) return;
   yControl = JOYSTICK_PRESS;
   
@@ -271,7 +271,7 @@ void ServoControl::yByJoystickPress(int& y) {
   }
 }
 
-void ServoControl::yByTouchpad(int& y) {
+void RobotControl::yByTouchpad(int& y) {
   if (checkConflict(TOUCHPAD, 'y')) return;
   yControl = TOUCHPAD;
   
@@ -286,7 +286,7 @@ void ServoControl::yByTouchpad(int& y) {
 }
 
 // D-AXIS METHODS
-void ServoControl::dByButtons(int& d) { //done
+void RobotControl::dByButtons(int& d) { //done
   if (checkConflict(BUTTONS, 'd')) return;
   dControl = BUTTONS;
   
@@ -315,7 +315,7 @@ void ServoControl::dByButtons(int& d) { //done
     prizm.setMotorPowers(0,0);
   }
   
-void ServoControl::dByLeftStick(int& d) { //done
+void RobotControl::dByLeftStick(int& d) { //done
   if (checkConflict(LEFT_STICK, 'd')) return;
   dControl = LEFT_STICK;
   
@@ -338,7 +338,7 @@ void ServoControl::dByLeftStick(int& d) { //done
   }
 }
 
-void ServoControl::dByRightStick(int& d) { //done
+void RobotControl::dByRightStick(int& d) { //done
   if (checkConflict(RIGHT_STICK, 'd')) return;
   dControl = RIGHT_STICK;
   
@@ -361,7 +361,7 @@ void ServoControl::dByRightStick(int& d) { //done
   }
 }
 
-void ServoControl::dByDPAD(int& d) { //done
+void RobotControl::dByDPAD(int& d) { //done
   if (checkConflict(DPAD, 'd')) return;
   dControl = DPAD;
   
@@ -390,7 +390,7 @@ void ServoControl::dByDPAD(int& d) { //done
     prizm.setMotorPowers(0,0);
   }
   
-void ServoControl::dByTriggers(int& d) { //done
+void RobotControl::dByTriggers(int& d) { //done
   if (checkConflict(TRIGGERS, 'd')) return;
   dControl = TRIGGERS;
 
@@ -414,7 +414,7 @@ void ServoControl::dByTriggers(int& d) { //done
 }
 
 
-void ServoControl::dByTouchpad(int& d) { //done
+void RobotControl::dByTouchpad(int& d) { //done
   if (checkConflict(TOUCHPAD, 'd')) return;
   dControl = TOUCHPAD;
   
