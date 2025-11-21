@@ -1,7 +1,7 @@
 #include "Controlib.h"
 
 RobotControl::RobotControl(PRIZM& prizmRef, PS4& ps4Ref) 
-  : prizm(prizmRef), ps4(ps4Ref), lastUpdate(0), xControl(NONE), yControl(NONE), dControl(NONE), speedLevel(0), lastShareState(false) {}
+  : prizm(prizmRef), ps4(ps4Ref), lastUpdate(0), xControl(NONE), yControl(NONE), dControl(NONE), speedLevel(0), lastShareState(false), speedOn(false) {}
 
 void RobotControl::speedControl() {
   bool currentCrossState = ps4.Button(SHARE);
@@ -464,30 +464,58 @@ void RobotControl::yByTouchpad(int& y) {
 void RobotControl::dByButtons(int& d) { //done
   if (checkConflict(BUTTONS, 'd')) return;
   dControl = BUTTONS;
-  
   if (!canUpdate()) return;
   
 
   if (ps4.Button(TRIANGLE)) {
-    prizm.setMotorPowers(50,50);
+    if (speedOn == true) {
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(d,d);
+    }
+    else {
+      d = 50;
+      prizm.setMotorPowers(d,d);
+    }
   }
- 
+    
   else if (ps4.Button(CROSS)) {
-    prizm.setMotorPowers(-50,-50);
+    if (speedOn == true){
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(-d,-d);
+    }
+    else {
+      d = 50;
+      prizm.setMotorPowers(-d,-d);
+    }
   }
-  
+    
   else if (ps4.Button(SQUARE)) {
-    prizm.setMotorPowers(-50, 50); 
-    return;
+    if (speedOn == true){
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(-d,d);
+    }
+    else {
+      d = 50
+      prizm.setMotorPowers(-d, d); 
+      return;
+    }
   }
 
   else if (ps4.Button(CIRCLE)) {
-    prizm.setMotorPowers(50, -50);
-    return;
+    if (speedOn == true){
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(d,-d);
+    }
+    else {
+      d = 50;
+      prizm.setMotorPowers(d, -d);
+      return;
+    }
   }
-
+    
   else {
-    prizm.setMotorPowers(0,0);
+    d = 0;
+    prizm.setMotorPowers(d,d);
   }
   
 void RobotControl::dByLeftStick(int& d) { //done
@@ -520,22 +548,55 @@ void RobotControl::dByRightStick(int& d) { //done
   if (!canUpdate()) return;
   
   if (ps4.Motor(RX) > 10) {
-    prizm.setMotorPowers(50,-50);
+    if (speedOn == true){
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(d,-d);
+    }
+    else {
+      d = 50;
+      prizm.setMotorPowers(d,-d);
+    }
   }
+    
   else if (ps4.Motor(RX) < -10) {
-    prizm.setMotorPowers(-50,50);
+    if (speedOn == true){
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(-d,d);
+    }
+    else {
+      d = 50;
+      prizm.setMotorPowers(-d,d);
+    }
   }
+    
   else if (ps4.Motor(RY) > 10){
-    prizm.setMotorPowers(50,50);
+    if (speedOn == true){
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(d,d);
+    }
+    else {
+      d = 50;
+      prizm.setMotorPowers(d,d);
+    }
   }
+    
   else if (ps4.Motor(RY) < -10){
-    prizm.setMotorPowers(-50,-50);
+    if (speedOn == true) {
+      d = 50 * getSpeedMultiplier();
+      prizm.setMotorPowers(-d,-d);
+    }
+    else {
+      d = 50;
+      prizm.setMotorPowers(-d,-d);
+    }
   }
+    
   else{
-    prizm.setMotorPowers(0,0);
+    d = 0;
+    prizm.setMotorPowers(d,d);
   }
 }
-
+w
 void RobotControl::dByDPAD(int& d) { //done
   if (checkConflict(DPAD, 'd')) return;
   dControl = DPAD;
